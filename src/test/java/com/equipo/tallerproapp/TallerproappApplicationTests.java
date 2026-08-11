@@ -10,4 +10,8 @@ class TallerproappApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void printJvmTimeZone(){
+		System.out.println(java.util.TimeZone.getDefault().getID());
+	}
 }
