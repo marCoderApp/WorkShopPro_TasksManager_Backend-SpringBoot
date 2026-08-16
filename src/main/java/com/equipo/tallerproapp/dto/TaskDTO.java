@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TaskDTO {
 
-
+  private Long id;
     private String title;
      private String description;
      private String status;
@@ -28,4 +28,5 @@ public class TaskDTO {
      private String category;
      private String comment;
      private String assignedTo;
+
 }

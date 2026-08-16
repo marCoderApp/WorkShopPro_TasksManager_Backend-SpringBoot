@@ -6,6 +6,7 @@ import com.equipo.tallerproapp.dto.LoginRequestDTO;
 import com.equipo.tallerproapp.dto.RegisterRequestDTO;
 import com.equipo.tallerproapp.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
             @RequestBody LoginRequestDTO request) {
-        return ResponseEntity.ok(authService.login(request));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(authService.login(request));
     }
 
 }

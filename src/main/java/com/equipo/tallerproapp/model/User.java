@@ -35,7 +35,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private Boolean isEnabled = true;
+    @Column(name = "enabled",
+            nullable = false)
+    private Boolean enabled = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -43,6 +45,15 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(enabled);
+    }
     @Override
     public String getUsername() {
         return email;
@@ -53,10 +64,6 @@ public class User implements UserDetails {
     }
     @Override
     public boolean isAccountNonLocked() {
-        return true;
-    }
-   @Override
-   public boolean isCredentialsNonExpired() {
         return true;
     }
 
