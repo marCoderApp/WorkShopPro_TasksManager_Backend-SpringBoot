@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class OwnProfileDTO {
 
+    private Long id;
     private String name;
     private String lastname;
     private String dni;

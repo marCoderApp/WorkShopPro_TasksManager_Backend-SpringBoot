@@ -1,5 +1,6 @@
 package com.equipo.tallerproapp.mapper;
 
+import com.equipo.tallerproapp.dto.OwnProfileDTO;
 import com.equipo.tallerproapp.dto.TaskDTO;
 import com.equipo.tallerproapp.dto.UserProfileDTO;
 import com.equipo.tallerproapp.dto.UsersDTO;
@@ -63,6 +64,27 @@ public class Mapper {
                 .due_date(task.getDue_date())
                 .category(task.getCategory().name())
                 .build();
+
+        return dto;
+    }
+
+    //USER TO OWNPROFILEDTO
+    public static OwnProfileDTO userToOwnProfileDTO(User user,
+                                                     List<TaskDTO> tasks){
+        if(user == null) return null;
+        if(tasks == null) return null;
+
+        OwnProfileDTO dto = OwnProfileDTO.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .lastname(user.getLastname())
+                .dni(user.getDni())
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .isEnabled(user.isEnabled())
+                .tasks(tasks)
+                .build();
+
 
         return dto;
     }

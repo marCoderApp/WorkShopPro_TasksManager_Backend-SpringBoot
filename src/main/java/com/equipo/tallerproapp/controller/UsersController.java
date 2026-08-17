@@ -1,11 +1,10 @@
 package com.equipo.tallerproapp.controller;
 
 
-import com.equipo.tallerproapp.dto.EditRoleDTO;
-import com.equipo.tallerproapp.dto.UserProfileDTO;
-import com.equipo.tallerproapp.dto.UsersDTO;
+import com.equipo.tallerproapp.dto.*;
 import com.equipo.tallerproapp.service.implementations.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +41,24 @@ public class UsersController {
         return ResponseEntity.ok(usersService.activateUser(id));
     }
 
+    //TO SEE OWN PROFILE
+    @GetMapping("/my_profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<OwnProfileDTO> toSeeOwnProfile(){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(usersService.toSeeOwnProfile());
+    }
+
+    //TO EDIT OWN PROFILE
+    @PatchMapping("/edit_profile")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<OwnProfileDTO> editProfile(@RequestBody EditProfileDTO dto){
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(usersService.editProfile(dto));
+
+    }
 
 }

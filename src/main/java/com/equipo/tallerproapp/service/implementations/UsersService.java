@@ -1,9 +1,6 @@
 package com.equipo.tallerproapp.service.implementations;
 
-import com.equipo.tallerproapp.dto.OwnProfileDTO;
-import com.equipo.tallerproapp.dto.TaskDTO;
-import com.equipo.tallerproapp.dto.UserProfileDTO;
-import com.equipo.tallerproapp.dto.UsersDTO;
+import com.equipo.tallerproapp.dto.*;
 import com.equipo.tallerproapp.mapper.Mapper;
 import com.equipo.tallerproapp.model.Role;
 import com.equipo.tallerproapp.model.Task;
@@ -12,6 +9,8 @@ import com.equipo.tallerproapp.repository.TaskRepository;
 import com.equipo.tallerproapp.repository.UserRepository;
 import com.equipo.tallerproapp.service.interfaces.IUsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -100,8 +99,55 @@ public class UsersService implements IUsersService{
     //TO SEE OWN PROFILE
     @Override
     public OwnProfileDTO toSeeOwnProfile() {
-        return null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new RuntimeException("User not found with email: " + email)
+        );
+
+        List<TaskDTO> tasks = taskRepository.findByUserId(user.getId())
+                .stream()
+                .map(Mapper::taskToDTO)
+                .toList();
+
+        return Mapper.userToOwnProfileDTO(user, tasks);
     }
+
+    @Override
+    public OwnProfileDTO editProfile(EditProfileDTO dto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new RuntimeException("User not found with email: " + email)
+        );
+
+        if (dto.getDni() != null) {
+            user.setDni(dto.getDni());
+        }
+
+        if (dto.getName() != null) {
+            user.setName(dto.getName());
+        }
+
+        if (dto.getLastname() != null) {
+            user.setLastname(dto.getLastname());
+        }
+
+        User userUpdated = userRepository.save(user);
+
+        List<TaskDTO> tasks = taskRepository.findByUserId(userUpdated.getId())
+                .stream()
+                .map(Mapper::taskToDTO)
+                .toList();
+
+        return Mapper.userToOwnProfileDTO(userUpdated, tasks);
+    }
+
 
 
 
