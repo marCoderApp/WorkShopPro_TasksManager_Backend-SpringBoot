@@ -60,7 +60,7 @@ public class Mapper {
                 .priority(task.getPriority())
                 .status(task.getStatus().name())
                 .comment(task.getComment())
-                .assignedTo(task.getUser().getId().toString())
+                .assignedTo(task.getAssignedTo())
                 .due_date(task.getDue_date())
                 .category(task.getCategory().name())
                 .build();

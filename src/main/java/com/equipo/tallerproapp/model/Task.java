@@ -4,10 +4,7 @@ import com.equipo.tallerproapp.enums.CategoryEnum;
 import com.equipo.tallerproapp.enums.PriorityEnum;
 import com.equipo.tallerproapp.enums.TaskStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Task {
 
 
@@ -27,6 +25,9 @@ public class Task {
     private LocalDateTime updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    @Column(name = "assigned_to")
+    private String assignedTo;
 
     @Enumerated(EnumType.STRING)
     private PriorityEnum priority;
