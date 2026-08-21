@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -31,7 +33,7 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
 
     //CREATE NEW TASK
     @Override
-    public TaskDTO createTask(TaskDTO dto, Long tech_id) {
+    public TaskDTO createTask(TaskDTO dto, Long tech_id)    {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -96,37 +98,95 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
     //ASSIGN TASK TO TECH
     @Override
     public String assignTaskToTech(AssignTaskDTO dto){
-        return null;
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new RuntimeException("User not found with email: " + email)
+        );
+
+        Task task = taskRepository.findById(dto.getTaskId()).orElseThrow(
+                ()-> new RuntimeException("Task not found with id: " + dto.getTaskId())
+        );
+
+        User tech = userRepository.findById(dto.getTechId()).orElseThrow(
+                ()-> new RuntimeException("Tech not found with id: " + dto.getTechId())
+        );
+
+        if(!tech.getRole().name().equals("TECNICO")){
+            throw new IllegalArgumentException("User is not a tech");
+        }
+
+        task.setAssignedTo(Long.toString(dto.getTechId()));
+
+        Task updatedTask = taskRepository.save(task);
+
+        return "Task assigned to tech: " + "successfully.";
+
     }
 
     //LIST TASKS BY TECH
     @Override
     public List<TaskDTO> getTasksByTech(Long id){
-        return null;
+        List<TaskDTO> tasks = taskRepository.findByTechId(id).stream()
+                .map(Mapper::taskToDTO)
+                .toList();
+
+        return tasks;
     }
 
     //LIST TASKS BY USER
     @Override
     public List<TaskDTO> getTasksByUser(Long id){
-        return null;
+
+        List<TaskDTO> tasks = taskRepository.findByUserId(id).stream()
+                .map(Mapper::taskToDTO)
+                .toList();
+        return tasks;
     }
 
     //LIST TASKS BY STATUS
     @Override
     public List<TaskDTO> getTasksByStatus(String status){
-        return null;
+
+        TaskStatus taskStatus = TaskStatus.valueOf(status.toUpperCase());
+
+        List<TaskDTO> tasks = taskRepository.findByStatus(taskStatus).stream()
+                .map(Mapper::taskToDTO)
+                .toList();
+
+        return tasks;
     }
 
     //LIST TASKS BY CREATED DATE
     @Override
     public List<TaskDTO> getTasksByCreatedDate(String date){
-        return null;
+
+
+        LocalDate localDate = LocalDate.parse(date);
+
+        LocalDateTime startDate = localDate.atStartOfDay();
+        LocalDateTime endDate = localDate.atTime(LocalTime.MAX);
+
+        return taskRepository.findByCreatedDate(startDate, endDate)
+                .stream()
+                .map(Mapper::taskToDTO)
+                .toList();
     }
 
     //LIST TASKS BY DUE DATE
     @Override
     public List<TaskDTO> getTasksByDueDate(String date){
-        return null;
+        LocalDate localDate = LocalDate.parse(date);
+        LocalDateTime startDate = localDate.atStartOfDay();
+        LocalDateTime endDate = localDate.atTime(LocalTime.MAX);
+
+        return taskRepository.findByDueDate(startDate, endDate)
+                .stream()
+                .map(Mapper::taskToDTO)
+                .toList();
     }
 
 }

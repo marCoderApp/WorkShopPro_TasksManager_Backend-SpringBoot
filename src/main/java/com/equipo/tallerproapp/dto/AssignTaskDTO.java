@@ -12,6 +12,5 @@ public class AssignTaskDTO {
 
     private Long taskId;
     private Long techId;
-    private String createdBy;
 
 }
