@@ -7,7 +7,7 @@ import java.util.List;
 public interface ITechService {
 
     // TO SEE MY OWN TASKS
-    List<TaskDTO> listMyTasks(Long tech_id);
+    List<TaskDTO> listMyTasks();
 
     //CHANGE TASK STATUS
     String changeTaskStatus(Long task_id, String status);
