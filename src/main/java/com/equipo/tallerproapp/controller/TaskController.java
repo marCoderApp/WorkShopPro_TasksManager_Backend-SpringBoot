@@ -1,6 +1,7 @@
 package com.equipo.tallerproapp.controller;
 
 import com.equipo.tallerproapp.dto.AssignTaskDTO;
+import com.equipo.tallerproapp.dto.ChangePriorityDTO;
 import com.equipo.tallerproapp.dto.TaskDTO;
 import com.equipo.tallerproapp.service.implementations.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +97,19 @@ public class TaskController {
     public ResponseEntity<Iterable<TaskDTO>> getTasksByDueDate(@PathVariable String date){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(taskService.getTasksByDueDate(date));
+    }
+
+    //CHANGE TASK PRIORITY
+    @PatchMapping("/change_priority")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPER_ADMIN')")
+    public ResponseEntity<?> changeTaskPriority(@RequestBody ChangePriorityDTO dto){
+
+        try{
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(taskService.changeTaskPriority(dto));
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
     }
 }

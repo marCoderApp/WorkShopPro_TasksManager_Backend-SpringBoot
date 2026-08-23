@@ -1,6 +1,7 @@
 package com.equipo.tallerproapp.service.interfaces;
 
 import com.equipo.tallerproapp.dto.AssignTaskDTO;
+import com.equipo.tallerproapp.dto.ChangePriorityDTO;
 import com.equipo.tallerproapp.dto.TaskDTO;
 
 import java.util.List;
@@ -34,6 +35,9 @@ public interface ITaskService {
 
     //LIST TASKS BY DUE DATE
     List<TaskDTO> getTasksByDueDate(String date);
+
+    //TO CHANGE TASK PRIORITY
+    String changeTaskPriority(ChangePriorityDTO dto);
 
 
 }

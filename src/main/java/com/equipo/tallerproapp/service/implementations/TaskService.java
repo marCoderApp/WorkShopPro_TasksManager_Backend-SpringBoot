@@ -1,8 +1,10 @@
 package com.equipo.tallerproapp.service.implementations;
 
 import com.equipo.tallerproapp.dto.AssignTaskDTO;
+import com.equipo.tallerproapp.dto.ChangePriorityDTO;
 import com.equipo.tallerproapp.dto.TaskDTO;
 import com.equipo.tallerproapp.enums.CategoryEnum;
+import com.equipo.tallerproapp.enums.PriorityEnum;
 import com.equipo.tallerproapp.enums.TaskStatus;
 import com.equipo.tallerproapp.mapper.Mapper;
 import com.equipo.tallerproapp.model.Task;
@@ -189,4 +191,28 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
                 .toList();
     }
 
+    //CHANGE TASK PRIORITY
+    @Override
+    public String changeTaskPriority(ChangePriorityDTO dto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(
+                ()-> new RuntimeException("User not found with email: " + email)
+        );
+
+        Task task = taskRepository.findById(dto.getTask_id()).orElseThrow(
+                ()-> new RuntimeException("Task not found with id: " + dto.getTask_id())
+        );
+
+        try{
+            task.setPriority(PriorityEnum.valueOf(dto.getPriority()
+                    .toUpperCase()));
+            task.setUpdatedAt(LocalDateTime.now());
+            task.setUpdatedBy(String.valueOf(user.getId()));
+            taskRepository.save(task);
+            return "Priority changed successfully.";
+        }catch (Exception e){
+            return "Error: " + e.getMessage();
+        }
+    }
 }
