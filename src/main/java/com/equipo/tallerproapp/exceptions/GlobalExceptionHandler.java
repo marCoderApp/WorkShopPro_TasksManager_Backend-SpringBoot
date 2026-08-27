@@ -62,10 +62,26 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(400, e.getMessage()));
     }
 
+    //ILLEGAL ARGUMENT ERRORS
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(400, e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(500, e.getMessage()));
     }
+
+    //LOCKED ERRORS
+    @ExceptionHandler(org.springframework.security.authentication.LockedException.class)
+    public ResponseEntity<ErrorResponse> handleLockedException(org.springframework.security.authentication.LockedException e){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(401, e.getMessage()));
+    }
+
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,6 +40,18 @@ public class User implements UserDetails {
             nullable = false)
     private Boolean enabled = true;
 
+
+    @Column(name = "failed_attemps",
+            nullable = false,
+    columnDefinition = "int default 0")
+    private int failedAttemps = 0;
+
+    @Column(name = "blocked")
+    private Boolean blocked = false;
+
+    @Column(name = "block_date")
+    private LocalDateTime blockDate;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -54,6 +67,9 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return Boolean.TRUE.equals(enabled);
     }
+
+    public boolean isBlocked(){ return Boolean.TRUE.equals(blocked);}
+
     @Override
     public String getUsername() {
         return email;

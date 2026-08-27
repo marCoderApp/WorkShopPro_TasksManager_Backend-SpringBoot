@@ -11,6 +11,7 @@ import com.equipo.tallerproapp.model.Task;
 import com.equipo.tallerproapp.model.User;
 import com.equipo.tallerproapp.repository.TaskRepository;
 import com.equipo.tallerproapp.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,11 +43,11 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()-> new RuntimeException("User not found with email: " + email)
+                ()-> new EntityNotFoundException("User not found!")
         );
 
         User tech = userRepository.findById(tech_id).orElseThrow(
-                ()-> new RuntimeException("Tech not foun with id" + tech_id)
+                ()-> new EntityNotFoundException("Tech not found!!")
         );
 
         if(!tech.getRole().name().equals("TECNICO")){
@@ -91,7 +92,7 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
     public TaskDTO getTaskById(Long id){
 
         Task task = taskRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Task not found with id: " + id)
+                ()-> new EntityNotFoundException("Task not found with id: " + id)
         );
 
         return Mapper.taskToDTO(task);
@@ -106,15 +107,15 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()-> new RuntimeException("User not found with email: " + email)
+                ()-> new EntityNotFoundException("User not found with email: " + email)
         );
 
         Task task = taskRepository.findById(dto.getTaskId()).orElseThrow(
-                ()-> new RuntimeException("Task not found with id: " + dto.getTaskId())
+                ()-> new EntityNotFoundException("Task not found with id: " + dto.getTaskId())
         );
 
         User tech = userRepository.findById(dto.getTechId()).orElseThrow(
-                ()-> new RuntimeException("Tech not found with id: " + dto.getTechId())
+                ()-> new EntityNotFoundException("Tech not found with id: " + dto.getTechId())
         );
 
         if(!tech.getRole().name().equals("TECNICO")){
@@ -197,11 +198,11 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()-> new RuntimeException("User not found with email: " + email)
+                ()-> new EntityNotFoundException("User not found with email: " + email)
         );
 
         Task task = taskRepository.findById(dto.getTask_id()).orElseThrow(
-                ()-> new RuntimeException("Task not found with id: " + dto.getTask_id())
+                ()-> new EntityNotFoundException("Task not found with id: " + dto.getTask_id())
         );
 
         try{

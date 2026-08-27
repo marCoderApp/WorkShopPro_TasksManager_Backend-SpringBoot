@@ -7,6 +7,7 @@ import com.equipo.tallerproapp.model.Task;
 import com.equipo.tallerproapp.model.User;
 import com.equipo.tallerproapp.repository.TaskRepository;
 import com.equipo.tallerproapp.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,11 +66,11 @@ public class TechService implements com.equipo.tallerproapp.service.interfaces.I
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user =  userRepository.findByEmail(authentication.getName()).orElseThrow(
-                ()-> new RuntimeException("User with email: " + authentication.getName())
+                ()-> new EntityNotFoundException("User with email: " + authentication.getName())
         );
 
         User tech = userRepository.findById(user.getId()).orElseThrow(
-                ()-> new IllegalArgumentException("Tech with id" + user.getId() +
+                ()-> new EntityNotFoundException("Tech with id" + user.getId() +
                         " is not a tech!")
         );
 
@@ -79,7 +80,7 @@ public class TechService implements com.equipo.tallerproapp.service.interfaces.I
         }
 
          Task task = taskRepository.findById(task_id).orElseThrow(
-                 ()-> new IllegalArgumentException("Task with id" + task_id + " not found.")
+                 ()-> new EntityNotFoundException("Task with id" + task_id + " not found.")
          );
 
          try {
@@ -102,16 +103,16 @@ public class TechService implements com.equipo.tallerproapp.service.interfaces.I
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user =  userRepository.findByEmail(authentication.getName()).orElseThrow(
-                ()-> new RuntimeException("User with email: " + authentication.getName())
+                ()-> new EntityNotFoundException("User with email: " + authentication.getName())
         );
 
         User tech = userRepository.findById(user.getId()).orElseThrow(
-                ()-> new IllegalArgumentException("Tech with id" + user.getId() +
+                ()-> new EntityNotFoundException("Tech with id" + user.getId() +
                         " is not a tech!")
         );
 
         Task task = taskRepository.findById(task_id).orElseThrow(
-                ()-> new IllegalArgumentException("Task with id" + task_id + " not found.")
+                ()-> new EntityNotFoundException("Task with id" + task_id + " not found.")
         );
 
         task.setComment(comment);

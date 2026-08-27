@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 public class EditProfileDTO {
 
+
     private String name;
     private String lastname;
     private String dni;

@@ -5,6 +5,7 @@ import com.equipo.tallerproapp.dto.AuthResponse;
 import com.equipo.tallerproapp.dto.LoginRequestDTO;
 import com.equipo.tallerproapp.dto.RegisterRequestDTO;
 import com.equipo.tallerproapp.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequestDTO request) {
+    public ResponseEntity<AuthResponse> register(
+            @Valid @RequestBody RegisterRequestDTO request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(
-            @RequestBody LoginRequestDTO request) {
+            @Valid @RequestBody LoginRequestDTO request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(authService.login(request));

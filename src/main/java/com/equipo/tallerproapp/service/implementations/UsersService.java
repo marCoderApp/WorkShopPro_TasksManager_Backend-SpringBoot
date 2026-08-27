@@ -8,6 +8,7 @@ import com.equipo.tallerproapp.model.User;
 import com.equipo.tallerproapp.repository.TaskRepository;
 import com.equipo.tallerproapp.repository.UserRepository;
 import com.equipo.tallerproapp.service.interfaces.IUsersService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -105,7 +106,7 @@ public class UsersService implements IUsersService{
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()-> new RuntimeException("User not found with email: " + email)
+                ()-> new EntityNotFoundException("User not found with email: " + email)
         );
 
         List<TaskDTO> tasks = taskRepository.findByUserId(user.getId())
@@ -123,7 +124,7 @@ public class UsersService implements IUsersService{
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(
-                ()-> new RuntimeException("User not found with email: " + email)
+                ()-> new EntityNotFoundException("User not found with email: " + email)
         );
 
         if (dto.getDni() != null) {
