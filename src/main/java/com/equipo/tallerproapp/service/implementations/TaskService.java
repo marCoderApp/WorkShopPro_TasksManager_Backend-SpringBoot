@@ -114,12 +114,25 @@ public class TaskService implements com.equipo.tallerproapp.service.interfaces.I
                 ()-> new EntityNotFoundException("Task not found with id: " + dto.getTaskId())
         );
 
+        if (task.getStatus().name().equals("COMPLETED") || task.getStatus().name().equals("CANCELLED")
+            || task.getStatus().name().equals("IN_PROGRESS")){
+                throw new IllegalArgumentException("Can't assign this task to a tech, please create a new task");
+            }
+
         User tech = userRepository.findById(dto.getTechId()).orElseThrow(
                 ()-> new EntityNotFoundException("Tech not found with id: " + dto.getTechId())
         );
 
         if(!tech.getRole().name().equals("TECNICO")){
             throw new IllegalArgumentException("User is not a tech");
+        }
+
+        if(!task.getAssignedTo().equals(Long.toString(dto.getTechId()))){
+            throw new IllegalArgumentException("Task is already assigned to another tech");
+        }
+
+        if(task.getAssignedTo().equals(Long.toString(dto.getTechId()))){
+            throw new IllegalArgumentException("Task is already assigned to this tech");
         }
 
         task.setAssignedTo(Long.toString(dto.getTechId()));
