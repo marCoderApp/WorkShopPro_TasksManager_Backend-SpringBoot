@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,40 @@ public class UsersService implements IUsersService{
 
     @Autowired
     private TaskRepository taskRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    //CREATE NEW USER
+    public UsersDTO createUser(RegisterRequestDTO request){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User currentUser = (User) authentication.getPrincipal();
+
+        if(request.getRole().name().equals("SUPER_ADMIN")){
+            throw new IllegalArgumentException("Super admin cannot be created");
+        }
+
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+     User newUser = User.builder()
+             .name(request.getName())
+             .lastname(request.getLastName())
+             .dni(request.getDni())
+             .email(request.getEmail())
+             .password(passwordEncoder.encode(request.getPassword()))
+             .role(Role.valueOf(request.getRole().name()))
+             .enabled(true)
+             .build();
+
+        userRepository.save(newUser);
+
+        return Mapper.userToDTO(newUser);
+    }
 
     //LIST ALL USERS
     @Override
@@ -148,8 +183,4 @@ public class UsersService implements IUsersService{
 
         return Mapper.userToOwnProfileDTO(userUpdated, tasks);
     }
-
-
-
-
 }

@@ -34,10 +34,14 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/api/auth/**",
+                    //SWAGGER
+                    .requestMatchers(
                             "/swagger-ui/**",
                             "/swagger-ui.html",
-                            "/v3/api-docs/**").permitAll()
+                            "/v3/api-docs/**",
+                            "/v3/api-docs").permitAll()
+                    //PUBLIC AUTH
+                    .requestMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

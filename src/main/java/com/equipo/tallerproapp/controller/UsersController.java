@@ -18,6 +18,15 @@ public class UsersController {
     @Autowired
     private UsersService usersService;
 
+    //CREATE USER
+    @PostMapping("/register_user")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
+    public ResponseEntity<UsersDTO> createUser(@RequestBody
+                                                   RegisterRequestDTO request){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(usersService.createUser(request));
+    }
+
     //EDIT ROLE
     @PatchMapping("/edit_role/{id}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
