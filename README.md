@@ -21,7 +21,7 @@ Allows managing users, assigning tasks to technicians, and tracking the status o
 
 - JDK 21
 - Maven 3.9+
-- PostgreSQL running on localhost
+- PostgreSQL 16 alpine running on docker container
 
 ---
 
