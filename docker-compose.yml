@@ -1,3 +1,8 @@
+version: "3.9"
+
+networks:
+  tallerpro-net:
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,17 +12,37 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      TZ: UTC
-      PGTZ: UTC
     ports:
       - "5434:5432"
     volumes:
-      - tallerpro_postgres_data:/var/lib/postgresql
+      - tallerpro_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - tallerpro-net
+
+  app:
+    build:
+      context: .
+    container_name: tallerpro-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - tallerpro-net
 
 volumes:
   tallerpro_postgres_data:
